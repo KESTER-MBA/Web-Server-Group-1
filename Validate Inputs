@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details Form</title>
+</head>
+<body>
+
+    <h2>Contact Us</h2>
+
+    <form action="process_form.php" method="POST">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+        
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+        
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+        
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+</html>
+
+
+
+
+
+<?php
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Collect and sanitize inputs
+    $name = trim($_POST['name']);
+    $email = trim($_POST['email']);
+    $message = trim($_POST['message']);
+
+    // Validate inputs
+    $errors = [];
+
+    if (empty($name)) {
+        $errors[] = "Name is required.";
+    }
+
+    if (empty($email)) {
+        $errors[] = "Email is required.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format.";
+    }
+
+    if (empty($message)) {
+        $errors[] = "Message is required.";
+    }
+
+    // If there are validation errors, display them
+    if (!empty($errors)) {
+        echo "<ul>";
+        foreach ($errors as $error) {
+            echo "<li>" . htmlspecialchars($error) . "</li>";
+        }
+        echo "</ul>";
+    } else {
+        // If validation is successful, save the data to a text file
+        $data = "Name: " . $name . "\n";
+        $data .= "Email: " . $email . "\n";
+        $data .= "Message: " . $message . "\n";
+        $data .= "-----------------------------------\n";
+
+        $file = "submissions.txt"; // Text file to save the data
+
+        if (file_put_contents($file, $data, FILE_APPEND | LOCK_EX)) {
+            echo "Thank you for your submission!";
+        } else {
+            echo "There was an error saving your submission.";
+        }
+    }
+} else {
+    echo "Invalid request method.";
+}
+?>
