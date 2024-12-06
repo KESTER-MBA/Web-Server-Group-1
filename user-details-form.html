@@ -21,5 +21,15 @@
 
             <button type="submit">Submit</button>
         </form>
+         <!-- Display status messages -->
+        <?php if (isset($_GET['status'])): ?>
+            <div class="status-message">
+                <?php if ($_GET['status'] == 'success'): ?>
+                    <p style="color: green;">Your message has been sent successfully!</p>
+                <?php else: ?>
+                    <p style="color: red;">There was an error sending your message. Please try again.</p>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </body>
